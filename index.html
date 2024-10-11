@@ -3,21 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Page Title</title>
+    <title>CTMS Object Fetcher</title>
     <link rel="stylesheet" href="style.css"> <!-- Optional: for CSS -->
 </head>
 <body>
-    <!-- <div class="card"> -->
-        <!-- <h1>Veeva vault CTMS</h1> -->
-        <!-- <p>This is your first web page!</p> -->
-        <img src="image/logo3.png" alt="Description of the image" style="max-width: 50%; height: 10%;"><br/>
-        <form id="searchForm" onsubmit="onSearch(event)">
-            <!-- <input type="text" id="searchInput" placeholder="Search..." onchange="inputChange()"> -->
-            <input type="text" id="searchInput" placeholder="Search..." onchange="inputChange()" class="search-input">
-            <input type="submit" value="Search" class="search-button">
-        </form>
-        <div id="errorMessage" style="color: red; margin-top: 5px;"></div> <!-- Error message placeholder -->
-    <!-- </div> -->
+    <div class="center-container">
+    <img src="image/logo3.png" alt="Description of the image" class="logo" style="max-width: 30%; height: auto;"><br/>
+    <div class="search-container">
+          
+        <input type="text" id="searchInput" placeholder="Search..." class="search-input" onchange="inputChange()">
+        <input type="button" value="Search" class="search-button" onclick="onSearch(event)">
+    </div>
+     <div id="errorMessage" style="color: red; margin-top: 5px;"></div> <!-- Error message placeholder -->
+    
+    
+     <div id="credentials" style="display: none;"> <!--Initially hidden -->
+        <h1>CTMS Object Fetcher</h1>
+        <label for="username">Username:</label>
+        <input type="text" id="username" />
+        <label for="password">Password:</label>
+        <input type="password" id="password" />
+        <button id="fetchCTMS">Fetch CTMS Object</button>
+     </div>
+    </div>
+
+    <div id="output"></div>
+     <div class="card" id="card" style="display: none;"> <!-- Initially hidden -->
+        <h1 id="ctmsTitle" style="display: none;">CTMS Object</h1>
+        <div id="output" style="display: none;"></div> <!-- Initially hidden -->
+    </div>
     <script src="script.js"></script> <!-- Link to your JS file -->
 </body>
 </html>
