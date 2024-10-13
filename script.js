@@ -46,7 +46,7 @@ async function authenticate(username, password) {
     if (!response.ok) {
         const textResponse = await response.text(); // Get text response
         console.error('Authentication failed:', textResponse);
-        throw new Error('Authentication failed');
+        throw new Error('Authentication failed: Invalid Username or Password');
     }
 
     const data = await response.json();
@@ -77,7 +77,7 @@ async function fetchCTMSObject(sessionId) {
     if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to fetch CTMS object:', errorData);
-        throw new Error('Failed to fetch CTMS object');
+        throw new Error('Failed to fetch CTMS object: ' + (errorData.errors || 'Unknown error'));
     }
 
     const data = JSON.parse(textResponse); // Parse the text response
@@ -85,15 +85,12 @@ async function fetchCTMSObject(sessionId) {
 
     return data; // Return the entire data object
 }
-/* <h2><button class="base" onclick="handleClick('${obj.label}')">
-                    ${obj.label}
-                </button></h2> */
+
 function displayCTMSData(ctmsData) {
     const outputDiv = document.getElementById('output');
     outputDiv.innerHTML = ''; // Clear previous content
 
-    // Access the objects array from the response
-    const objects = ctmsData.objects;
+    const objects = ctmsData.objects; // Access the objects array from the response
 
     if (Array.isArray(objects) && objects.length > 0) {
         objects.forEach(obj => {
@@ -113,10 +110,6 @@ function displayCTMSData(ctmsData) {
     }
 }
 
-function handleClick(caseNumber) {
-    alert(`Button clicked for Case Number: ${caseNumber}`);
-}
-
 document.getElementById('fetchCTMS').addEventListener('click', async () => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -124,15 +117,22 @@ document.getElementById('fetchCTMS').addEventListener('click', async () => {
     // Hide the output and title initially
     const outputDiv = document.getElementById('output');
     const ctmsTitle = document.getElementById('ctmsTitle');
+    const loadingMessageDiv = document.getElementById('loadingMessage');
+    const errorMessageDiv = document.getElementById('errorMessage'); // Get the error message div
+
     outputDiv.style.display = 'none'; // Ensure it's hidden before fetching
     ctmsTitle.style.display = 'none'; // Ensure it's hidden before fetching
+    loadingMessageDiv.style.display = 'block'; // Show loading message
+
+    // Clear previous error messages
+    errorMessageDiv.textContent = ''; // Clear the error message
 
     try {
         const sessionId = await authenticate(username, password);
         console.log("Authenticated successfully:", sessionId);
         
         const ctmsData = await fetchCTMSObject(sessionId);
-        displayCTMSData(ctmsData);
+        displayCTMSData(ctmsData); // Call to display data
 
         // Hide the credentials form and show the card
         document.getElementById('credentials').style.display = 'none';
@@ -143,9 +143,10 @@ document.getElementById('fetchCTMS').addEventListener('click', async () => {
         outputDiv.style.display = 'block'; // Show the output div
 
     } catch (error) {
-        console.error(error.message);
-        outputDiv.innerHTML = 'Error: ' + error.message;
+        errorMessageDiv.textContent = 'Error: ' + error.message; // Display the error in the UI
+        outputDiv.innerHTML = ''; // Clear output on error
         outputDiv.style.display = 'block'; // Show the output div for error messages
+    } finally {
+        loadingMessageDiv.style.display = 'none'; // Hide loading message
     }
 });
-
